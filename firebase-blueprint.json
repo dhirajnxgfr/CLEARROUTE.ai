@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile representation in ClearRoute AI",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["driver", "fleet_manager", "admin"] },
+        "preferredLanguage": { "type": "string", "enum": ["en", "hi"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "DriverReport": {
+      "title": "DriverReport",
+      "description": "Community hazard or clearance warning reported by a driver",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userName": { "type": "string" },
+        "type": { "type": "string", "enum": ["height_barrier", "weight_limit", "bridge_damage", "police_checkpoint", "overnight_curfew", "steep_incline", "toll_fastag"] },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "corridor": { "type": "string" },
+        "severity": { "type": "string", "enum": ["info", "warning", "critical"] },
+        "verified": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "type", "title", "lat", "lng"]
+    },
+    "SavedTrip": {
+      "title": "SavedTrip",
+      "description": "User saved route or trip record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "originName": { "type": "string" },
+        "destinationName": { "type": "string" },
+        "vehicleName": { "type": "string" },
+        "distanceKm": { "type": "number" },
+        "durationMin": { "type": "number" },
+        "tollsEstimate": { "type": "number" },
+        "dieselEstimate": { "type": "number" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "userId", "originName", "destinationName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores individual user profile and preference records"
+    },
+    "/reports/{reportId}": {
+      "schema": "DriverReport",
+      "description": "Community reported hazards and clearance alerts"
+    },
+    "/users/{userId}/trips/{tripId}": {
+      "schema": "SavedTrip",
+      "description": "User specific trips and planned corridors"
+    }
+  }
+}

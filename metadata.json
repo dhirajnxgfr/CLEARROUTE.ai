@@ -1,0 +1,6 @@
+{
+  "name": "TruckRoute - Heavy Vehicle Smart Routing",
+  "description": "Heavy-vehicle-aware smart navigation prototype for India NextGen TechFusion 2026. Computes legal routes respecting weight, height, axle, bridge limits and municipal time bans with explainable rejection analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

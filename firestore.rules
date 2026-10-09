@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Deny Catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) &&
+        request.resource.data.uid == userId &&
+        request.resource.data.email is string;
+      allow update: if isOwner(userId) &&
+        request.resource.data.uid == userId;
+      allow delete: if isOwner(userId);
+
+      // Subcollection for user saved trips
+      match /trips/{tripId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Community Driver Hazard Reports
+    match /reports/{reportId} {
+      allow read: if true;
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.title is string &&
+        request.resource.data.title.size() <= 200;
+      allow update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid);
+      allow delete: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid);
+    }
+  }
+}
